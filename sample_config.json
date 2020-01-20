@@ -1,4 +1,5 @@
 {
     "API_KEY" : "<API_KEY>",
-    "API_SECRET" : "<API_SECRET>"
+    "API_SECRET" : "<API_SECRET>",
+    "RATE_THEADHOLD_HIGH" : 0.0006
 }

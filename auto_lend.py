@@ -14,9 +14,9 @@ logging.basicConfig(level=logging.DEBUG,
 
 
 with open('config.json' , 'r') as reader:
-    key = json.loads(reader.read())
+    config = json.loads(reader.read())
 
-bfx = Client(key['API_KEY'], key['API_SECRET'], logLevel='DEBUG')
+bfx = Client(config['API_KEY'], config['API_SECRET'], logLevel='DEBUG')
 now = int(round(time.time() * 1000))
 then = now - (1000 * 60 * 60 * 24 * 10) # 10 days ago
 
@@ -27,6 +27,7 @@ async def wallet_available_balance():
 async def get_books():
     books = await bfx.rest.get_public_books('fUSD','R0',25)
     max_funding_rate_want_borrow = books[0][2]
+    max_funding_rate_want_days = books[0][1]
     tmp = 0
     money = 0
     for book in books:
@@ -34,7 +35,7 @@ async def get_books():
             tmp += book[2] * book[3]
             money += book[3] 
     funding_rate = round(tmp / money, 8)
-    if max_funding_rate_want_borrow > funding_rate:
+    if max_funding_rate_want_borrow > funding_rate and max_funding_rate_want_days == 2:
         return max_funding_rate_want_borrow
     else:
         return funding_rate
@@ -46,9 +47,9 @@ async def wallet_funding_balance():
             balance = math.ceil(amount.__dict__['unsettled_interest']*100)/100
     return balance
 
-async def create_funding_order(funding_rate, balance):
+async def create_funding_order(funding_rate, balance, day):
     try:
-        resp = await bfx.rest.submit_funding_offer("fUSD", balance, funding_rate, 2)
+        resp = await bfx.rest.submit_funding_offer("fUSD", balance, funding_rate, day)
         logging.info(resp)
     except Exception as e:
         logging.error(e)
@@ -72,8 +73,10 @@ async def run():
     funding_rate_year = round(math.pow(1 + funding_rate, 365) - 1, 4)
     logging.info("Balance: %.2f, Rate: %.8f, Year: %.4f", balance, funding_rate, funding_rate_year)
     if balance > 50:
-        await create_funding_order(funding_rate, balance)
-
+        if funding_rate > config['RATE_THEADHOLD_HIGH']:
+            await create_funding_order(funding_rate, balance, 30)
+        else: 
+            await create_funding_order(funding_rate, balance, 2)
 while 1 :
     t = asyncio.ensure_future(run())
     asyncio.get_event_loop().run_until_complete(t)

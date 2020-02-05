@@ -21,11 +21,19 @@ now = int(round(time.time() * 1000))
 then = now - (1000 * 60 * 60 * 24 * 10) # 10 days ago
 
 async def wallet_available_balance():
-    balance = await bfx.rest.get_available_balance('fUSD', 1, 800, 'FUNDING')
-    return round(balance[0]*(-1),3)-0.001
+    try:
+        balance = await bfx.rest.get_available_balance('fUSD', 1, 800, 'FUNDING')
+        return round(balance[0]*(-1),3)-0.001
+    except Exception as e:
+        logging.error(e)
+        return 0
 
 async def get_books():
-    books = await bfx.rest.get_public_books('fUSD','R0',25)
+    try:
+        books = await bfx.rest.get_public_books('fUSD','R0',25)
+    except Exception as e:
+        logging.error(e)
+        return 0
     max_funding_rate_want_borrow = books[0][2]
     max_funding_rate_want_days = books[0][1]
     tmp = 0
@@ -41,7 +49,11 @@ async def get_books():
         return funding_rate
 
 async def wallet_funding_balance():
-    amounts = await bfx.rest.get_wallets()
+    try:
+        amounts = await bfx.rest.get_wallets()
+    except Exception as e:
+        logging.error(e)
+        return 0
     for amount in amounts:
         if amount.__dict__['key'] == 'funding_USD':            
             balance = math.ceil(amount.__dict__['unsettled_interest']*100)/100
@@ -55,7 +67,11 @@ async def create_funding_order(funding_rate, balance, day):
         logging.error(e)
 
 async def check_offer():
-    offers = await bfx.rest.get_funding_offers('fUSD')
+    try:
+        offers = await bfx.rest.get_funding_offers('fUSD')
+    except Exception as e:
+        logging.error(e)
+        return 
     for offer in offers:
         offer_data = offer.__dict__
         now = math.ceil(time.time()*1000)

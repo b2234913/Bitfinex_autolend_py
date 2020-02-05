@@ -7,6 +7,7 @@ __pycache__/
 *.log
 .DS_Store
 auto_lend.code-workspace
+*.out
 
 # C extensions
 *.so

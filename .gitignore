@@ -8,6 +8,8 @@ __pycache__/
 .DS_Store
 auto_lend.code-workspace
 *.out
+.gitignore
+config.json
 
 # C extensions
 *.so

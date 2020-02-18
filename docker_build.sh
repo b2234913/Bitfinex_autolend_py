@@ -1,2 +1,2 @@
-docker build --no-cache -t b2234913/auto_lend -f docker/Dockerfile .
-docker rmi $(docker images -f “dangling=true” -q)
+docker build --no-cache -t b2234913/auto_lend -f docker/Dockerfile .  # docker build auto_lend image
+docker rmi $(docker images -f “dangling=true” -q)                     # remove old images with none name

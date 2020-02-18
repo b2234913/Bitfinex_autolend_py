@@ -1,0 +1,6 @@
+#
+.vscode
+auto_lend.code-workspace
+.DS_Store
+.python-version
+my_config.json

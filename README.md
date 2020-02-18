@@ -32,3 +32,14 @@ docker run --restart=always -d -it \
   -w /app b2234913/auto_lend \
   python3 auto_lend.py
 ```
+
+### Check auto lend status
+get imformationo f container
+```
+docker ps -a 
+```
+go in container and check log file
+```
+docker exec -it <container id> bash
+cat auto_lend.log
+```

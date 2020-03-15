@@ -91,6 +91,8 @@ async def run():
     if balance > 50:
         if funding_rate > config['RATE_THEADHOLD_HIGH']:
             await create_funding_order(funding_rate, balance, 30)
+        elif funding_rate < config['RATE_THEADHOLD_LOW']:
+            logging.info("The Lendding Rate is too low!") 
         else: 
             await create_funding_order(funding_rate, balance, 2)
 while 1 :

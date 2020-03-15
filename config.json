@@ -2,5 +2,5 @@
     "API_KEY" : "<api_key>",
     "API_SECRET" : "<api_secret>",
     "RATE_THEADHOLD_HIGH" : "<30days_theadhold_rate>", 
-    "RATE_THEADHOLD_LOW" :  "<Low lendding rate>"
+    "RATE_THEADHOLD_LOW" :  "<Low lending rate>"
 }
